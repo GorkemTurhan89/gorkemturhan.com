@@ -1,0 +1,188 @@
+---
+import { site, socials } from '../data/site';
+import Icon from './Icon.astro';
+---
+
+<section class="hero" id="top">
+  <div class="hero__glow" aria-hidden="true"></div>
+  <div class="hero__grid" aria-hidden="true"></div>
+
+  <div class="container hero__inner">
+    <p class="eyebrow" data-reveal>{site.location}</p>
+
+    <h1 class="hero__name" data-reveal style="--reveal-delay: 60ms">
+      {site.name}
+    </h1>
+
+    <p class="hero__role" data-reveal style="--reveal-delay: 120ms">
+      {site.role}
+    </p>
+
+    <p class="hero__tagline" data-reveal style="--reveal-delay: 180ms">
+      {site.tagline}
+    </p>
+
+    <div class="hero__actions" data-reveal style="--reveal-delay: 240ms">
+      <a
+        class="btn btn--primary"
+        href={socials.linkedin.href}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Icon name="linkedin" />
+        LinkedIn
+      </a>
+      <a
+        class="btn btn--ghost"
+        href={socials.github.href}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Icon name="github" />
+        GitHub
+      </a>
+      <a
+        class="btn btn--ghost"
+        href={site.cv.href}
+        download={site.cv.filename}
+      >
+        <Icon name="download" />
+        Download CV
+      </a>
+    </div>
+  </div>
+
+  <a class="hero__scroll" href="#about" aria-label="Scroll to About">
+    <Icon name="arrow-down" size="1rem" />
+  </a>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: min(92svh, 900px);
+    padding-block: clamp(5rem, 14vh, 9rem) clamp(6rem, 16vh, 10rem);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  /* Soft accent bloom behind the headline. */
+  .hero__glow {
+    position: absolute;
+    z-index: -2;
+    top: -22%;
+    left: 50%;
+    width: min(1100px, 130vw);
+    aspect-ratio: 1;
+    transform: translateX(-58%);
+    background: radial-gradient(
+      circle at center,
+      var(--accent-glow) 0%,
+      transparent 62%
+    );
+    opacity: 0.85;
+    pointer-events: none;
+  }
+
+  /* Faint engineering grid, faded out toward the edges. */
+  .hero__grid {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background-image: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0.028) 1px,
+        transparent 1px
+      ),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 80% 65% at 50% 40%, #000 30%, transparent 100%);
+    -webkit-mask-image: radial-gradient(
+      ellipse 80% 65% at 50% 40%,
+      #000 30%,
+      transparent 100%
+    );
+    pointer-events: none;
+  }
+
+  .hero__inner {
+    max-width: 60rem;
+  }
+
+  .hero__name {
+    margin-top: 1.25rem;
+    font-size: clamp(2.75rem, 8.5vw, 5.25rem);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1.02;
+  }
+
+  .hero__role {
+    margin-top: 0.9rem;
+    font-family: var(--font-mono);
+    font-size: clamp(0.9375rem, 2.2vw, 1.1875rem);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--accent);
+  }
+
+  .hero__tagline {
+    max-width: 42rem;
+    margin-top: 1.5rem;
+    font-size: clamp(1rem, 1.6vw, 1.125rem);
+    color: var(--text-muted);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2.25rem;
+  }
+
+  /* --- Scroll cue --- */
+  .hero__scroll {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    translate: -50% 0;
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: var(--bg-elev);
+    color: var(--text-muted);
+    animation: nudge 2.6s var(--ease) infinite;
+    transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+  }
+
+  .hero__scroll:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  @keyframes nudge {
+    0%,
+    72%,
+    100% {
+      transform: translateY(0);
+    }
+    82% {
+      transform: translateY(5px);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero__scroll {
+      display: none;
+    }
+
+    .hero__actions .btn {
+      flex: 1 1 auto;
+    }
+  }
+</style>

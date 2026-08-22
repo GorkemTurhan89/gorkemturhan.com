@@ -1,0 +1,108 @@
+---
+import { site, socials } from '../data/site';
+import Icon from './Icon.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container footer__inner">
+    <p class="footer__copy">
+      &copy; {year} {site.name}. All rights reserved.
+    </p>
+
+    <ul class="footer__socials">
+      <li>
+        <a
+          href={socials.github.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="GitHub"
+        >
+          <Icon name="github" size="1.05rem" />
+        </a>
+      </li>
+      <li>
+        <a
+          href={socials.linkedin.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="LinkedIn"
+        >
+          <Icon name="linkedin" size="1.05rem" />
+        </a>
+      </li>
+      <li>
+        <a href={socials.email.href} aria-label="Email">
+          <Icon name="mail" size="1.05rem" />
+        </a>
+      </li>
+    </ul>
+
+    <a class="footer__top" href="#top">
+      Back to top
+      <Icon name="arrow-up-right" size="0.85rem" />
+    </a>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--border);
+    padding-block: 2rem;
+  }
+
+  .footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+    font-size: 0.8125rem;
+    color: var(--text-dim);
+  }
+
+  .footer__copy {
+    margin-right: auto;
+  }
+
+  .footer__socials {
+    display: flex;
+    gap: 0.35rem;
+    order: 1;
+  }
+
+  .footer__socials a {
+    display: grid;
+    place-items: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: var(--r-sm);
+    color: var(--text-dim);
+    transition: color var(--dur) var(--ease),
+      background-color var(--dur) var(--ease);
+  }
+
+  .footer__socials a:hover {
+    color: var(--accent);
+    background: var(--bg-elev);
+  }
+
+  .footer__top {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    order: 2;
+    transition: color var(--dur) var(--ease);
+  }
+
+  .footer__top:hover {
+    color: var(--accent);
+  }
+
+  @media (max-width: 560px) {
+    .footer__copy {
+      flex-basis: 100%;
+      margin-right: 0;
+    }
+  }
+</style>

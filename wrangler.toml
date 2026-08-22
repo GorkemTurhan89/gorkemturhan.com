@@ -1,0 +1,5 @@
+# Cloudflare Pages project configuration.
+# Lets `npx wrangler pages deploy` work without any dashboard setup.
+name = "gorkemturhan-com"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-08-22"

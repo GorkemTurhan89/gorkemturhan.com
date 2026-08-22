@@ -1,0 +1,10 @@
+# Normalise line endings: LF in the repository, native in the working copy.
+# Keeps Windows checkouts from showing phantom whole-file diffs, and matches
+# what the Linux build runner on Cloudflare Pages sees.
+* text=auto eol=lf
+
+# Binary assets — never touch these.
+*.pdf binary
+*.png binary
+*.ico binary
+*.woff2 binary

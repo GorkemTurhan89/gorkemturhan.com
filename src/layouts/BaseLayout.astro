@@ -1,0 +1,212 @@
+---
+import { site, socials } from '../data/site';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = `${site.name} — ${site.role}`,
+  description = site.description,
+} = Astro.props;
+
+/* Astro.site comes from `site` in astro.config.mjs; fall back to the
+   configured origin so `astro dev` still emits absolute URLs. */
+const origin = Astro.site?.origin ?? site.url;
+const canonical = new URL(Astro.url.pathname, origin).href;
+const ogImage = new URL(site.ogImage, origin).href;
+
+/* Structured data helps search engines render a richer result for a name. */
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.name,
+  jobTitle: site.role,
+  description: site.description,
+  url: site.url,
+  email: socials.email.href.replace('mailto:', ''),
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: site.location,
+  },
+  sameAs: [socials.linkedin.href, socials.github.href, socials.upwork.href],
+  knowsAbout: site.keywords,
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="canonical" href={canonical} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={site.name} />
+    <meta name="keywords" content={site.keywords.join(', ')} />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0a0b0d" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content={`${site.name} — ${site.role}`}
+    />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Icons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Fonts: two families, subset and swapped in by Google Fonts. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(personSchema)}
+    />
+
+    <!-- Marks the document as scripted before paint, so reveal animations
+         never leave content hidden when JS is unavailable. -->
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <slot />
+
+    <script>
+      /**
+       * Page behaviour. Three small, independent pieces of vanilla JS:
+       * a sticky-header state, a scroll-spy for the nav, and reveal-on-scroll.
+       *
+       * Everything degrades gracefully — without JS the page is fully readable,
+       * just without the polish.
+       */
+
+      const prefersReducedMotion = window.matchMedia(
+        '(prefers-reduced-motion: reduce)',
+      ).matches;
+
+      /* --- 1. Sticky header: add a background once we leave the top --- */
+      const header = document.getElementById('site-header');
+
+      if (header) {
+        const onScroll = () => {
+          header.classList.toggle('is-stuck', window.scrollY > 8);
+        };
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
+      }
+
+      /* --- 2. Mobile menu --- */
+      const nav = document.getElementById('primary-nav');
+      const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+
+      if (nav && toggle) {
+        const setOpen = (open: boolean) => {
+          nav.classList.toggle('is-open', open);
+          toggle.setAttribute('aria-expanded', String(open));
+          toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+        };
+
+        toggle.addEventListener('click', () => {
+          setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+        });
+
+        /* Close after picking a destination, or on Escape. */
+        nav.addEventListener('click', (event) => {
+          if ((event.target as HTMLElement).closest('a')) setOpen(false);
+        });
+
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape') setOpen(false);
+        });
+      }
+
+      /* --- 3. Scroll-spy: highlight the nav link for the section in view --- */
+      const navLinks = Array.from(
+        document.querySelectorAll<HTMLAnchorElement>('[data-nav-link]'),
+      );
+
+      const sections = navLinks
+        .map((link) => document.querySelector(link.hash))
+        .filter((section): section is Element => section !== null);
+
+      if (sections.length > 0) {
+        /* Track ratios ourselves so the *most* visible section wins, rather
+           than whichever one fired an entry most recently. */
+        const ratios = new Map<string, number>();
+
+        const spy = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              ratios.set(entry.target.id, entry.intersectionRatio);
+            }
+
+            let bestId = '';
+            let bestRatio = 0;
+            for (const [id, ratio] of ratios) {
+              if (ratio > bestRatio) {
+                bestRatio = ratio;
+                bestId = id;
+              }
+            }
+
+            for (const link of navLinks) {
+              link.classList.toggle('is-active', link.hash === `#${bestId}`);
+            }
+          },
+          { threshold: [0, 0.15, 0.3, 0.5, 0.75, 1] },
+        );
+
+        sections.forEach((section) => spy.observe(section));
+      }
+
+      /* --- 4. Reveal on scroll --- */
+      const revealTargets = document.querySelectorAll('[data-reveal]');
+
+      if (prefersReducedMotion) {
+        revealTargets.forEach((el) => el.classList.add('is-revealed'));
+      } else {
+        const reveal = new IntersectionObserver(
+          (entries, observer) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              entry.target.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          },
+          { rootMargin: '0px 0px -12% 0px', threshold: 0.05 },
+        );
+
+        revealTargets.forEach((el) => reveal.observe(el));
+      }
+    </script>
+  </body>
+</html>

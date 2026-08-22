@@ -1,0 +1,239 @@
+---
+import { site, navItems } from '../data/site';
+import Icon from './Icon.astro';
+---
+
+<header class="header" id="site-header">
+  <div class="container header__inner">
+    <a class="brand" href="#top" aria-label={`${site.name} — back to top`}>
+      <span class="brand__mark" aria-hidden="true">{site.initials}</span>
+      <span class="brand__name">{site.name}</span>
+    </a>
+
+    <nav class="nav" id="primary-nav" aria-label="Primary">
+      <ul class="nav__list">
+        {
+          navItems.map((item) => (
+            <li>
+              <a class="nav__link" href={item.href} data-nav-link>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    {
+      site.availableForWork && (
+        <p class="status" aria-label="Availability">
+          <span class="status__dot" aria-hidden="true" />
+          Available for work
+        </p>
+      )
+    }
+
+    <button
+      class="nav-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="primary-nav"
+      aria-label="Open menu"
+      data-nav-toggle
+    >
+      <span class="nav-toggle__open"><Icon name="menu" size="1.35rem" /></span>
+      <span class="nav-toggle__close"><Icon name="close" size="1.35rem" /></span>
+    </button>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--dur) var(--ease),
+      background-color var(--dur) var(--ease);
+  }
+
+  /* Toggled by JS once the page scrolls away from the top. Opaque by
+     default; the translucent treatment is layered on only where the blur
+     that makes it readable is actually supported. */
+  .header.is-stuck {
+    background: var(--bg);
+    border-bottom-color: var(--border);
+  }
+
+  @supports (backdrop-filter: blur(12px)) or (-webkit-backdrop-filter: blur(12px)) {
+    .header.is-stuck {
+      background: color-mix(in srgb, var(--bg) 82%, transparent);
+      backdrop-filter: blur(12px) saturate(140%);
+      -webkit-backdrop-filter: blur(12px) saturate(140%);
+    }
+  }
+
+  .header__inner {
+    height: var(--header-h);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  /* --- Brand --- */
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin-right: auto;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .brand__mark {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-sm);
+    background: var(--bg-elev);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    transition: border-color var(--dur) var(--ease);
+  }
+
+  .brand:hover .brand__mark {
+    border-color: var(--accent);
+  }
+
+  .brand__name {
+    font-size: 0.9375rem;
+  }
+
+  /* --- Nav --- */
+  .nav__list {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .nav__link {
+    display: block;
+    padding: 0.45rem 0.7rem;
+    border-radius: var(--r-sm);
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    transition: color var(--dur) var(--ease),
+      background-color var(--dur) var(--ease);
+  }
+
+  .nav__link:hover {
+    color: var(--text);
+    background: var(--bg-elev);
+  }
+
+  /* Set by the scroll-spy script. */
+  .nav__link.is-active {
+    color: var(--accent);
+  }
+
+  /* --- Availability pill --- */
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--r-pill);
+    background: var(--bg-elev);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .status__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-tint);
+  }
+
+  /* --- Mobile toggle --- */
+  .nav-toggle {
+    display: none;
+    padding: 0.4rem;
+    border-radius: var(--r-sm);
+    color: var(--text-muted);
+  }
+
+  .nav-toggle:hover {
+    color: var(--text);
+  }
+
+  .nav-toggle__close {
+    display: none;
+  }
+
+  .nav-toggle[aria-expanded='true'] .nav-toggle__open {
+    display: none;
+  }
+
+  .nav-toggle[aria-expanded='true'] .nav-toggle__close {
+    display: block;
+  }
+
+  /* --- Mobile layout --- */
+  @media (max-width: 860px) {
+    .status {
+      display: none;
+    }
+
+    .nav-toggle {
+      display: block;
+    }
+
+    /* Solid on purpose — the hero sits directly behind this panel, and a
+       translucent menu is unreadable anywhere backdrop-filter is off. */
+    .nav {
+      position: absolute;
+      inset-inline: 0;
+      top: 100%;
+      padding: 0.5rem var(--gutter) 1rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 18px 40px -24px rgba(0, 0, 0, 0.95);
+      display: none;
+    }
+
+    .nav.is-open {
+      display: block;
+    }
+
+    .nav__list {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+    }
+
+    .nav__link {
+      padding: 0.85rem 0.25rem;
+      font-size: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav__list li:last-child .nav__link {
+      border-bottom: 0;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .brand__name {
+      display: none;
+    }
+  }
+</style>

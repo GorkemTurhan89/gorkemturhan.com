@@ -1,0 +1,75 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import { skillGroups } from '../data/skills';
+---
+
+<section class="section" id="skills">
+  <div class="container">
+    <SectionHeading
+      index="02"
+      eyebrow="Skills"
+      title="What I work with"
+      lead="The tools I reach for, grouped by where they sit in the delivery cycle — from writing the suite to watching what it catches in production."
+    />
+
+    <ul class="grid">
+      {
+        skillGroups.map((group, i) => (
+          <li
+            class="card group"
+            data-reveal
+            style={`--reveal-delay: ${i * 90}ms`}
+          >
+            <h3 class="group__title">{group.title}</h3>
+            <p class="group__summary">{group.summary}</p>
+            <ul class="chip-list">
+              {group.items.map((item) => (
+                <li class="chip">{item}</li>
+              ))}
+            </ul>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  /* 22rem lands on two columns at desktop width, which suits four groups
+     better than the 3 + 1 orphan a narrower minimum would produce. */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: 1rem;
+  }
+
+  .group {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .group:hover {
+    border-color: var(--border-strong);
+  }
+
+  .group__title {
+    font-size: 1.0625rem;
+  }
+
+  .group__summary {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .group .chip-list {
+    margin-top: 0.75rem;
+  }
+
+  .group:hover .chip {
+    border-color: var(--border-strong);
+    color: var(--text);
+  }
+</style>

@@ -1,0 +1,136 @@
+---
+import SectionHeading from './SectionHeading.astro';
+
+/** Quick facts rendered in the sidebar next to the summary. */
+const facts = [
+  { label: 'Experience', value: '5+ years in software testing' },
+  { label: 'Certified', value: 'ISTQB Foundation Level' },
+  { label: 'Core stack', value: 'Playwright · TypeScript · Selenium · Java' },
+  { label: 'Also', value: 'REST Assured · SQL · Sentry & Grafana' },
+  { label: 'Languages', value: 'Turkish · English · Spanish' },
+];
+---
+
+<section class="section" id="about">
+  <div class="container">
+    <SectionHeading index="01" eyebrow="About" title="About me" />
+
+    <div class="about">
+      <div class="about__body">
+        <p class="about__lead" data-reveal>
+          I&rsquo;m a software test engineer with more than five years across
+          manual and automation testing — API, UI and database layers — and I
+          own quality through the whole SDLC, from requirement analysis to
+          production monitoring.
+        </p>
+
+        <p data-reveal style="--reveal-delay: 80ms">
+          Most of my automation is built with <strong>Playwright</strong> and <strong>TypeScript</strong>,
+          or Java frameworks using <strong>Selenium</strong> and <strong>Cucumber</strong>,
+          always on the Page Object Model so suites stay maintainable as the
+          product moves. I push verification down to the <strong>API</strong> layer
+          with <strong>REST Assured</strong> and Postman against Swagger specs,
+          and reach for <strong>SQL</strong> when the truth lives in the database
+          rather than the UI.
+        </p>
+
+        <p data-reveal style="--reveal-delay: 140ms">
+          The part I care most about is what happens after release. I own live
+          monitoring during cross-team go-lives, using <strong>Sentry</strong> and <strong>Grafana</strong> to
+          catch real production errors and triage incidents fast — finding the
+          root cause and getting things stable again. That feedback loop is also
+          what tells me which regression scenarios are worth automating next.
+        </p>
+
+        <p data-reveal style="--reveal-delay: 200ms">
+          I still value <strong>manual and exploratory testing</strong> —
+          automation confirms what you already thought to ask, while exploration
+          is how you find the questions worth automating. Risk-based, either
+          way: fewer surprises in production, and a team that can ship without
+          holding its breath.
+        </p>
+      </div>
+
+      <aside class="about__facts" data-reveal style="--reveal-delay: 120ms">
+        <dl>
+          {
+            facts.map((fact) => (
+              <div class="fact">
+                <dt>{fact.label}</dt>
+                <dd>{fact.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+  }
+
+  .about__body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    color: var(--text-muted);
+    max-width: 46rem;
+  }
+
+  .about__lead {
+    font-size: clamp(1.0625rem, 1.8vw, 1.25rem);
+    color: var(--text);
+  }
+
+  .about__body strong {
+    font-weight: 550;
+    color: var(--text);
+  }
+
+  /* --- Quick facts --- */
+  .about__facts {
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    background: var(--bg-elev);
+    position: sticky;
+    top: calc(var(--header-h) + 2rem);
+  }
+
+  .fact + .fact {
+    margin-top: 1.15rem;
+    padding-top: 1.15rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .fact dt {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .fact dd {
+    margin: 0.4rem 0 0;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  @media (max-width: 900px) {
+    .about {
+      grid-template-columns: 1fr;
+    }
+
+    .about__facts {
+      position: static;
+    }
+  }
+</style>

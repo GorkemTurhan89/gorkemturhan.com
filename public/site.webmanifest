@@ -1,0 +1,22 @@
+{
+  "name": "Görkem Turhan — QA Automation Engineer / SDET",
+  "short_name": "Görkem Turhan",
+  "description": "Portfolio of Görkem Turhan, QA Automation Engineer and SDET.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0b0d",
+  "theme_color": "#0a0b0d",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
