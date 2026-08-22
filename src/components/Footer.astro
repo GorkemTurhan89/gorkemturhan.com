@@ -1,14 +1,16 @@
 ---
 import { site, socials } from '../data/site';
+import { useI18n } from '../i18n';
 import Icon from './Icon.astro';
 
+const { t, ui } = useI18n(Astro.currentLocale);
 const year = new Date().getFullYear();
 ---
 
 <footer class="footer">
   <div class="container footer__inner">
     <p class="footer__copy">
-      &copy; {year} {site.name}. All rights reserved.
+      &copy; {year} {site.name}. {ui.rightsReserved}
     </p>
 
     <ul class="footer__socials">
@@ -17,7 +19,7 @@ const year = new Date().getFullYear();
           href={socials.github.href}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="GitHub"
+          aria-label={t(socials.github.label)}
         >
           <Icon name="github" size="1.05rem" />
         </a>
@@ -27,20 +29,20 @@ const year = new Date().getFullYear();
           href={socials.linkedin.href}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="LinkedIn"
+          aria-label={t(socials.linkedin.label)}
         >
           <Icon name="linkedin" size="1.05rem" />
         </a>
       </li>
       <li>
-        <a href={socials.email.href} aria-label="Email">
+        <a href={socials.email.href} aria-label={t(socials.email.label)}>
           <Icon name="mail" size="1.05rem" />
         </a>
       </li>
     </ul>
 
     <a class="footer__top" href="#top">
-      Back to top
+      {ui.backToTop}
       <Icon name="arrow-up-right" size="0.85rem" />
     </a>
   </div>

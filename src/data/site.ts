@@ -3,41 +3,75 @@
  *
  * Everything that identifies the site lives here — edit this file and the
  * whole page updates. No component hardcodes a name, URL or handle.
+ *
+ * Fields typed `Localized<T>` carry both languages; see `src/i18n/`.
  */
+
+import type { Localized } from '../i18n';
 
 export const site = {
   name: 'Görkem Turhan',
   /** Used for the header monogram. */
   initials: 'GT',
-  role: 'QA Automation Engineer / SDET',
-  tagline:
-    'ISTQB-certified test engineer with 5+ years across manual and automation testing — API, UI and database layers, from requirement analysis through production monitoring.',
-  location: 'İstanbul, Türkiye',
+
+  role: {
+    en: 'QA Automation Engineer / SDET',
+    tr: 'QA Otomasyon Mühendisi / SDET',
+  } satisfies Localized,
+
+  tagline: {
+    en: 'ISTQB-certified test engineer with 5+ years across manual and automation testing — API, UI and database layers, from requirement analysis through production monitoring.',
+    tr: 'ISTQB sertifikalı test mühendisiyim. 5+ yıldır manuel ve otomasyon testleri yapıyorum — API, arayüz ve veritabanı katmanlarında, gereksinim analizinden canlı ortam izlemeye kadar.',
+  } satisfies Localized,
+
+  location: {
+    en: 'İstanbul, Türkiye',
+    tr: 'İstanbul, Türkiye',
+  } satisfies Localized,
 
   /** Canonical origin — no trailing slash. Used for canonical + OG URLs. */
   url: 'https://gorkemturhan.com',
 
   /** Meta description, ~155 characters. */
-  description:
-    'Görkem Turhan — QA Automation Engineer and SDET with 5+ years in manual and automation testing across API, UI and database layers. Playwright, Selenium, Java, TypeScript, ISTQB certified.',
+  description: {
+    en: 'Görkem Turhan — QA Automation Engineer and SDET with 5+ years in manual and automation testing across API, UI and database layers. Playwright, Selenium, Java, TypeScript, ISTQB certified.',
+    tr: 'Görkem Turhan — QA Otomasyon Mühendisi ve SDET. API, arayüz ve veritabanı katmanlarında 5+ yıllık manuel ve otomasyon test deneyimi. Playwright, Selenium, Java, TypeScript, ISTQB sertifikalı.',
+  } satisfies Localized,
 
-  /** Comma-separated keywords for the meta keywords tag. */
-  keywords: [
-    'QA Automation Engineer',
-    'SDET',
-    'Software Test Engineer',
-    'Playwright',
-    'Selenium',
-    'TypeScript',
-    'Java',
-    'API Testing',
-    'REST Assured',
-    'ISTQB',
-    'Görkem Turhan',
-  ],
+  keywords: {
+    en: [
+      'QA Automation Engineer',
+      'SDET',
+      'Software Test Engineer',
+      'Playwright',
+      'Selenium',
+      'TypeScript',
+      'Java',
+      'API Testing',
+      'REST Assured',
+      'ISTQB',
+      'Görkem Turhan',
+    ],
+    tr: [
+      'QA Otomasyon Mühendisi',
+      'SDET',
+      'Yazılım Test Mühendisi',
+      'test otomasyonu',
+      'Playwright',
+      'Selenium',
+      'TypeScript',
+      'Java',
+      'API testi',
+      'ISTQB',
+      'Görkem Turhan',
+    ],
+  } satisfies Localized<string[]>,
 
-  /** Open Graph / Twitter share image, relative to the site root. */
-  ogImage: '/og.png',
+  /** Open Graph / Twitter share image per language, relative to the site root. */
+  ogImage: {
+    en: '/og.png',
+    tr: '/og-tr.png',
+  } satisfies Localized,
 
   /** Downloadable CV, served from `public/`. */
   cv: {
@@ -51,10 +85,10 @@ export const site = {
 } as const;
 
 export interface SocialLink {
-  /** Short label shown on buttons and nav. */
-  label: string;
-  /** The public handle or address shown under the label on contact cards. */
-  handle: string;
+  /** Short label shown on buttons and contact cards. */
+  label: Localized;
+  /** The public handle or address shown under the label. */
+  handle: Localized;
   href: string;
   /** Key into the `Icon` component's sprite. */
   icon: 'linkedin' | 'github' | 'mail' | 'upwork' | 'download';
@@ -62,37 +96,39 @@ export interface SocialLink {
   download?: string;
 }
 
+const both = (value: string): Localized => ({ en: value, tr: value });
+
 export const socials = {
   linkedin: {
-    label: 'LinkedIn',
-    handle: '/in/gorkem-turhan',
+    label: both('LinkedIn'),
+    handle: both('/in/gorkem-turhan'),
     href: 'https://www.linkedin.com/in/gorkem-turhan/',
     icon: 'linkedin',
   },
   github: {
-    label: 'GitHub',
-    handle: '@GorkemTurhan89',
+    label: both('GitHub'),
+    handle: both('@GorkemTurhan89'),
     href: 'https://github.com/GorkemTurhan89',
     icon: 'github',
   },
   email: {
-    label: 'Email',
-    handle: 'gorkemturhan41@gmail.com',
+    label: { en: 'Email', tr: 'E-posta' },
+    handle: both('gorkemturhan41@gmail.com'),
     href: 'mailto:gorkemturhan41@gmail.com',
     icon: 'mail',
   },
+  upwork: {
+    label: both('Upwork'),
+    handle: { en: 'Hire me on Upwork', tr: 'Upwork profilim' },
+    href: 'https://www.upwork.com/freelancers/~015aee3872931557d6',
+    icon: 'upwork',
+  },
   cv: {
-    label: 'Download CV',
-    handle: 'PDF · 2 pages',
+    label: { en: 'Download CV', tr: 'CV’yi indir' },
+    handle: { en: 'PDF · 2 pages', tr: 'PDF · 2 sayfa' },
     href: site.cv.href,
     icon: 'download',
     download: site.cv.filename,
-  },
-  upwork: {
-    label: 'Upwork',
-    handle: 'Hire me on Upwork',
-    href: 'https://www.upwork.com/freelancers/~015aee3872931557d6',
-    icon: 'upwork',
   },
 } as const satisfies Record<string, SocialLink>;
 
@@ -113,15 +149,16 @@ export const contactLinks: SocialLink[] = [
 ].filter((link) => link.href.length > 0);
 
 export interface NavItem {
-  label: string;
+  /** Key into `ui.nav` — the label itself is translated in src/i18n/. */
+  key: 'about' | 'skills' | 'experience' | 'work' | 'contact';
   href: string;
 }
 
-/** Anchor targets must match the `id` of each <section> in index.astro. */
+/** Anchor targets must match the `id` of each <section> in Portfolio.astro. */
 export const navItems: NavItem[] = [
-  { label: 'About', href: '#about' },
-  { label: 'Skills', href: '#skills' },
-  { label: 'Experience', href: '#experience' },
-  { label: 'Work', href: '#work' },
-  { label: 'Contact', href: '#contact' },
+  { key: 'about', href: '#about' },
+  { key: 'skills', href: '#skills' },
+  { key: 'experience', href: '#experience' },
+  { key: 'work', href: '#work' },
+  { key: 'contact', href: '#contact' },
 ];

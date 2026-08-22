@@ -1,15 +1,18 @@
 ---
 import SectionHeading from './SectionHeading.astro';
 import { skillGroups } from '../data/skills';
+import { useI18n } from '../i18n';
+
+const { t, ui } = useI18n(Astro.currentLocale);
 ---
 
 <section class="section" id="skills">
   <div class="container">
     <SectionHeading
       index="02"
-      eyebrow="Skills"
-      title="What I work with"
-      lead="The tools I reach for, grouped by where they sit in the delivery cycle — from writing the suite to watching what it catches in production."
+      eyebrow={ui.sections.skills.eyebrow}
+      title={ui.sections.skills.title}
+      lead={ui.sections.skills.lead}
     />
 
     <ul class="grid">
@@ -20,8 +23,8 @@ import { skillGroups } from '../data/skills';
             data-reveal
             style={`--reveal-delay: ${i * 90}ms`}
           >
-            <h3 class="group__title">{group.title}</h3>
-            <p class="group__summary">{group.summary}</p>
+            <h3 class="group__title">{t(group.title)}</h3>
+            <p class="group__summary">{t(group.summary)}</p>
             <ul class="chip-list">
               {group.items.map((item) => (
                 <li class="chip">{item}</li>

@@ -1,15 +1,18 @@
 ---
 import SectionHeading from './SectionHeading.astro';
 import { experience } from '../data/experience';
+import { useI18n } from '../i18n';
+
+const { t, ui } = useI18n(Astro.currentLocale);
 ---
 
 <section class="section" id="experience">
   <div class="container">
     <SectionHeading
       index="03"
-      eyebrow="Experience"
-      title="Where I’ve worked"
-      lead="Roles in reverse-chronological order, with the parts that moved the needle."
+      eyebrow={ui.sections.experience.eyebrow}
+      title={ui.sections.experience.title}
+      lead={ui.sections.experience.lead}
     />
 
     <ol class="timeline">
@@ -21,19 +24,21 @@ import { experience } from '../data/experience';
             </div>
 
             <div class="entry__body">
-              <p class="entry__period">{job.period}</p>
+              <p class="entry__period">{t(job.period)}</p>
 
               {/* The space matters: the heading is a flex container, so it
                   is ignored for layout but keeps the accessible name from
-                  reading as "QA EngineerCompany Name". */}
+                  reading as "QA EngineerMars Athletic Club". */}
               <h3 class="entry__role">
-                {job.role} <span class="entry__company">{job.company}</span>
+                {t(job.role)} <span class="entry__company">{job.company}</span>
               </h3>
 
-              {job.location && <p class="entry__location">{job.location}</p>}
+              {job.location && (
+                <p class="entry__location">{t(job.location)}</p>
+              )}
 
               <ul class="entry__highlights">
-                {job.highlights.map((highlight) => (
+                {t(job.highlights).map((highlight) => (
                   <li>{highlight}</li>
                 ))}
               </ul>

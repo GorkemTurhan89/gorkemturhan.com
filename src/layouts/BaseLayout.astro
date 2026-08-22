@@ -1,52 +1,63 @@
 ---
 import { site, socials } from '../data/site';
+import { LANGS, LANG_META, pathFor, useI18n } from '../i18n';
 import '../styles/global.css';
 
-interface Props {
-  title?: string;
-  description?: string;
-}
+const { lang, t, ui } = useI18n(Astro.currentLocale);
 
-const {
-  title = `${site.name} — ${site.role}`,
-  description = site.description,
-} = Astro.props;
+const title = `${site.name} — ${t(site.role)}`;
+const description = t(site.description);
 
 /* Astro.site comes from `site` in astro.config.mjs; fall back to the
    configured origin so `astro dev` still emits absolute URLs. */
 const origin = Astro.site?.origin ?? site.url;
-const canonical = new URL(Astro.url.pathname, origin).href;
-const ogImage = new URL(site.ogImage, origin).href;
+const canonical = new URL(pathFor(lang), origin).href;
+const ogImage = new URL(t(site.ogImage), origin).href;
+
+/* Tell search engines about the other language, and which one to serve when
+   they cannot infer a preference. */
+const alternates = LANGS.map((code) => ({
+  code,
+  href: new URL(pathFor(code), origin).href,
+}));
 
 /* Structured data helps search engines render a richer result for a name. */
 const personSchema = {
   '@context': 'https://schema.org',
   '@type': 'Person',
   name: site.name,
-  jobTitle: site.role,
-  description: site.description,
+  jobTitle: t(site.role),
+  description,
   url: site.url,
   email: socials.email.href.replace('mailto:', ''),
   address: {
     '@type': 'PostalAddress',
-    addressLocality: site.location,
+    addressLocality: t(site.location),
   },
   sameAs: [socials.linkedin.href, socials.github.href, socials.upwork.href],
-  knowsAbout: site.keywords,
+  knowsAbout: t(site.keywords),
+  knowsLanguage: ['tr', 'en'],
 };
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={LANG_META[lang].htmlLang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="canonical" href={canonical} />
 
+    {
+      alternates.map((alt) => (
+        <link rel="alternate" hreflang={alt.code} href={alt.href} />
+      ))
+    }
+    <link rel="alternate" hreflang="x-default" href={new URL('/', origin).href} />
+
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="author" content={site.name} />
-    <meta name="keywords" content={site.keywords.join(', ')} />
+    <meta name="keywords" content={t(site.keywords).join(', ')} />
     <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#0a0b0d" />
 
@@ -56,14 +67,19 @@ const personSchema = {
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale" content={LANG_META[lang].ogLocale} />
+    {
+      LANGS.filter((code) => code !== lang).map((code) => (
+        <meta
+          property="og:locale:alternate"
+          content={LANG_META[code].ogLocale}
+        />
+      ))
+    }
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta
-      property="og:image:alt"
-      content={`${site.name} — ${site.role}`}
-    />
+    <meta property="og:image:alt" content={`${site.name} — ${t(site.role)}`} />
 
     <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -97,13 +113,14 @@ const personSchema = {
   </head>
 
   <body>
-    <a class="skip-link" href="#main">Skip to content</a>
+    <a class="skip-link" href="#main">{ui.skipToContent}</a>
     <slot />
 
     <script>
       /**
-       * Page behaviour. Three small, independent pieces of vanilla JS:
-       * a sticky-header state, a scroll-spy for the nav, and reveal-on-scroll.
+       * Page behaviour. Four small, independent pieces of vanilla JS:
+       * a sticky-header state, the mobile menu, a nav scroll-spy, and
+       * reveal-on-scroll.
        *
        * Everything degrades gracefully — without JS the page is fully readable,
        * just without the polish.
@@ -129,10 +146,15 @@ const personSchema = {
       const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
 
       if (nav && toggle) {
+        /* Labels are rendered onto the button so they stay translated —
+           this script is shared by both languages. */
+        const labelOpen = toggle.dataset.labelOpen ?? 'Open menu';
+        const labelClose = toggle.dataset.labelClose ?? 'Close menu';
+
         const setOpen = (open: boolean) => {
           nav.classList.toggle('is-open', open);
           toggle.setAttribute('aria-expanded', String(open));
-          toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+          toggle.setAttribute('aria-label', open ? labelClose : labelOpen);
         };
 
         toggle.addEventListener('click', () => {

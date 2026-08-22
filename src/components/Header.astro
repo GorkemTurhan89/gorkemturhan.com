@@ -1,11 +1,14 @@
 ---
 import { site, navItems } from '../data/site';
+import { LANGS, LANG_META, pathFor, useI18n } from '../i18n';
 import Icon from './Icon.astro';
+
+const { lang, ui } = useI18n(Astro.currentLocale);
 ---
 
 <header class="header" id="site-header">
   <div class="container header__inner">
-    <a class="brand" href="#top" aria-label={`${site.name} — back to top`}>
+    <a class="brand" href="#top" aria-label={`${site.name} — ${ui.backToTopAria}`}>
       <span class="brand__mark" aria-hidden="true">{site.initials}</span>
       <span class="brand__name">{site.name}</span>
     </a>
@@ -16,19 +19,67 @@ import Icon from './Icon.astro';
           navItems.map((item) => (
             <li>
               <a class="nav__link" href={item.href} data-nav-link>
-                {item.label}
+                {ui.nav[item.key]}
               </a>
             </li>
           ))
         }
       </ul>
+
+      {/* Duplicated inside the panel so the switcher is reachable on mobile,
+          where the header row has no space for it. */}
+      <div class="nav__lang">
+        <span class="lang" role="group" aria-label={ui.switchLanguage}>
+          {
+            LANGS.map((code) =>
+              code === lang ? (
+                <span class="lang__item is-current" aria-current="true">
+                  {LANG_META[code].short}
+                </span>
+              ) : (
+                <a
+                  class="lang__item"
+                  href={pathFor(code)}
+                  hreflang={code}
+                  lang={code}
+                  aria-label={LANG_META[code].name}
+                >
+                  {LANG_META[code].short}
+                </a>
+              ),
+            )
+          }
+        </span>
+      </div>
     </nav>
+
+    <span class="lang lang--header" role="group" aria-label={ui.switchLanguage}>
+      {
+        LANGS.map((code) =>
+          code === lang ? (
+            <span class="lang__item is-current" aria-current="true">
+              {LANG_META[code].short}
+            </span>
+          ) : (
+            <a
+              class="lang__item"
+              href={pathFor(code)}
+              hreflang={code}
+              lang={code}
+              aria-label={LANG_META[code].name}
+            >
+              {LANG_META[code].short}
+            </a>
+          ),
+        )
+      }
+    </span>
 
     {
       site.availableForWork && (
         <p class="status" aria-label="Availability">
           <span class="status__dot" aria-hidden="true" />
-          Available for work
+          {ui.availableForWork}
         </p>
       )
     }
@@ -38,8 +89,10 @@ import Icon from './Icon.astro';
       type="button"
       aria-expanded="false"
       aria-controls="primary-nav"
-      aria-label="Open menu"
+      aria-label={ui.openMenu}
       data-nav-toggle
+      data-label-open={ui.openMenu}
+      data-label-close={ui.closeMenu}
     >
       <span class="nav-toggle__open"><Icon name="menu" size="1.35rem" /></span>
       <span class="nav-toggle__close"><Icon name="close" size="1.35rem" /></span>
@@ -77,7 +130,7 @@ import Icon from './Icon.astro';
     height: var(--header-h);
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1rem;
   }
 
   /* --- Brand --- */
@@ -140,6 +193,41 @@ import Icon from './Icon.astro';
     color: var(--accent);
   }
 
+  /* --- Language switcher --- */
+  .lang {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px;
+    border: 1px solid var(--border);
+    border-radius: var(--r-pill);
+    background: var(--bg-elev);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1;
+  }
+
+  .lang__item {
+    padding: 0.35rem 0.6rem;
+    border-radius: var(--r-pill);
+    color: var(--text-dim);
+    transition: color var(--dur) var(--ease),
+      background-color var(--dur) var(--ease);
+  }
+
+  a.lang__item:hover {
+    color: var(--text);
+  }
+
+  .lang__item.is-current {
+    background: var(--bg-elev-2);
+    color: var(--accent);
+  }
+
+  /* Only one of the two switchers is visible at a time. */
+  .nav__lang {
+    display: none;
+  }
+
   /* --- Availability pill --- */
   .status {
     display: inline-flex;
@@ -187,12 +275,15 @@ import Icon from './Icon.astro';
     display: block;
   }
 
-  /* --- Mobile layout --- */
-  @media (max-width: 860px) {
+  /* The availability pill is the first thing to go as space tightens. */
+  @media (max-width: 1040px) {
     .status {
       display: none;
     }
+  }
 
+  /* --- Mobile layout --- */
+  @media (max-width: 860px) {
     .nav-toggle {
       display: block;
     }
@@ -203,7 +294,7 @@ import Icon from './Icon.astro';
       position: absolute;
       inset-inline: 0;
       top: 100%;
-      padding: 0.5rem var(--gutter) 1rem;
+      padding: 0.5rem var(--gutter) 1.25rem;
       background: var(--bg);
       border-bottom: 1px solid var(--border);
       box-shadow: 0 18px 40px -24px rgba(0, 0, 0, 0.95);
@@ -228,6 +319,18 @@ import Icon from './Icon.astro';
 
     .nav__list li:last-child .nav__link {
       border-bottom: 0;
+    }
+
+    /* Move the switcher into the panel, where there is room for it. */
+    .lang--header {
+      display: none;
+    }
+
+    .nav__lang {
+      display: block;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
     }
   }
 

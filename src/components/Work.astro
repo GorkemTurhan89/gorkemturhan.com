@@ -2,23 +2,26 @@
 import SectionHeading from './SectionHeading.astro';
 import Icon from './Icon.astro';
 import { projectGroups } from '../data/projects';
+import { useI18n } from '../i18n';
+
+const { t, ui } = useI18n(Astro.currentLocale);
 ---
 
 <section class="section" id="work">
   <div class="container">
     <SectionHeading
       index="04"
-      eyebrow="Featured work"
-      title="Selected projects"
-      lead="Test frameworks and side projects — the code behind the CV bullets."
+      eyebrow={ui.sections.work.eyebrow}
+      title={ui.sections.work.title}
+      lead={ui.sections.work.lead}
     />
 
     {
       projectGroups.map((group, groupIndex) => (
         <div class="group">
           <div class="group__header" data-reveal>
-            <h3 class="group__title">{group.title}</h3>
-            <p class="group__summary">{group.summary}</p>
+            <h3 class="group__title">{t(group.title)}</h3>
+            <p class="group__summary">{t(group.summary)}</p>
           </div>
 
           <ul class="grid">
@@ -29,11 +32,11 @@ import { projectGroups } from '../data/projects';
                 style={`--reveal-delay: ${i * 80}ms`}
               >
                 {project.badge && (
-                  <span class="project__badge">{project.badge}</span>
+                  <span class="project__badge">{t(project.badge)}</span>
                 )}
 
-                <h4 class="project__title">{project.title}</h4>
-                <p class="project__desc">{project.description}</p>
+                <h4 class="project__title">{t(project.title)}</h4>
+                <p class="project__desc">{t(project.description)}</p>
 
                 <ul class="chip-list project__tech">
                   {project.technologies.map((tech) => (
@@ -49,10 +52,10 @@ import { projectGroups } from '../data/projects';
                         href={project.github}
                         target="_blank"
                         rel="noopener noreferrer"
-                        aria-label={`Code for ${project.title} on GitHub`}
+                        aria-label={ui.work.codeAria(t(project.title))}
                       >
                         <Icon name="github" size="0.95rem" />
-                        Code
+                        {ui.work.code}
                       </a>
                     )}
                     {project.demo && (
@@ -61,10 +64,10 @@ import { projectGroups } from '../data/projects';
                         href={project.demo}
                         target="_blank"
                         rel="noopener noreferrer"
-                        aria-label={`Live demo of ${project.title}`}
+                        aria-label={ui.work.demoAria(t(project.title))}
                       >
                         <Icon name="arrow-up-right" size="0.95rem" />
-                        Live demo
+                        {ui.work.liveDemo}
                       </a>
                     )}
                   </div>
@@ -100,10 +103,12 @@ import { projectGroups } from '../data/projects';
     height: clamp(3rem, 6vw, 4.5rem);
   }
 
-  /* Two columns at desktop, matching the skills and contact grids. */
+  /* 20rem gives three columns at desktop width, so the QA row fills exactly.
+     A group with a single project collapses to one full-width feature card,
+     which is what `auto-fit` does with empty tracks. */
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
     gap: 1rem;
   }
 

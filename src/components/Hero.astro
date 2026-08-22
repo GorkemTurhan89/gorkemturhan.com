@@ -1,6 +1,9 @@
 ---
 import { site, socials } from '../data/site';
+import { useI18n } from '../i18n';
 import Icon from './Icon.astro';
+
+const { t, ui } = useI18n(Astro.currentLocale);
 ---
 
 <section class="hero" id="top">
@@ -8,18 +11,18 @@ import Icon from './Icon.astro';
   <div class="hero__grid" aria-hidden="true"></div>
 
   <div class="container hero__inner">
-    <p class="eyebrow" data-reveal>{site.location}</p>
+    <p class="eyebrow" data-reveal>{t(site.location)}</p>
 
     <h1 class="hero__name" data-reveal style="--reveal-delay: 60ms">
       {site.name}
     </h1>
 
     <p class="hero__role" data-reveal style="--reveal-delay: 120ms">
-      {site.role}
+      {t(site.role)}
     </p>
 
     <p class="hero__tagline" data-reveal style="--reveal-delay: 180ms">
-      {site.tagline}
+      {t(site.tagline)}
     </p>
 
     <div class="hero__actions" data-reveal style="--reveal-delay: 240ms">
@@ -47,12 +50,12 @@ import Icon from './Icon.astro';
         download={site.cv.filename}
       >
         <Icon name="download" />
-        Download CV
+        {ui.hero.downloadCv}
       </a>
     </div>
   </div>
 
-  <a class="hero__scroll" href="#about" aria-label="Scroll to About">
+  <a class="hero__scroll" href="#about" aria-label={ui.hero.scrollToAbout}>
     <Icon name="arrow-down" size="1rem" />
   </a>
 </section>

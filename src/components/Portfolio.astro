@@ -1,0 +1,32 @@
+---
+/**
+ * The page body, shared by both language routes.
+ *
+ * Every section reads its own language from `Astro.currentLocale`, so this
+ * composition is identical for `/` and `/tr/` — the only thing that differs
+ * is the URL the request came in on.
+ *
+ * The section `id`s here must match `navItems` in src/data/site.ts.
+ */
+import Header from './Header.astro';
+import Hero from './Hero.astro';
+import About from './About.astro';
+import Skills from './Skills.astro';
+import Experience from './Experience.astro';
+import Work from './Work.astro';
+import Contact from './Contact.astro';
+import Footer from './Footer.astro';
+---
+
+<Header />
+
+<main id="main">
+  <Hero />
+  <About />
+  <Skills />
+  <Experience />
+  <Work />
+  <Contact />
+</main>
+
+<Footer />

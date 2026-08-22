@@ -2,6 +2,9 @@
 import SectionHeading from './SectionHeading.astro';
 import Icon from './Icon.astro';
 import { contactLinks, socials } from '../data/site';
+import { useI18n } from '../i18n';
+
+const { t, ui } = useI18n(Astro.currentLocale);
 
 /* mailto: and the same-origin CV download should not open a new tab. */
 const isExternal = (href: string) => href.startsWith('http');
@@ -11,9 +14,9 @@ const isExternal = (href: string) => href.startsWith('http');
   <div class="container">
     <SectionHeading
       index="05"
-      eyebrow="Contact"
-      title="Let’s work together"
-      lead="Open to QA automation roles, SDET positions and freelance engagements. The fastest way to reach me is email or LinkedIn — the full CV is a click away."
+      eyebrow={ui.sections.contact.eyebrow}
+      title={ui.sections.contact.title}
+      lead={ui.sections.contact.lead}
     />
 
     <ul class="grid">
@@ -32,8 +35,8 @@ const isExternal = (href: string) => href.startsWith('http');
               </span>
 
               <span class="contact__text">
-                <span class="contact__label">{link.label}</span>
-                <span class="contact__handle">{link.handle}</span>
+                <span class="contact__label">{t(link.label)}</span>
+                <span class="contact__handle">{t(link.handle)}</span>
               </span>
 
               <span class="contact__arrow" aria-hidden="true">
@@ -46,7 +49,7 @@ const isExternal = (href: string) => href.startsWith('http');
     </ul>
 
     <p class="cta" data-reveal>
-      Prefer to just send a message? <a href={socials.email.href}>{socials.email.handle}</a>
+      {ui.contact.ctaPrefix} <a href={socials.email.href}>{t(socials.email.handle)}</a>
     </p>
   </div>
 </section>
