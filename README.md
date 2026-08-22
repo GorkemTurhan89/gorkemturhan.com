@@ -105,8 +105,8 @@ Conventions worth knowing:
   hide that line.
 - **Dead links can't render.** `contactLinks` filters out any entry with an
   empty `href`, so an unfinished link is skipped rather than shown broken.
-- **Availability pill.** Set `availableForWork: false` in `site.ts` to hide the
-  "Available for work" chip in the header.
+- **Availability pill.** Currently off. Set `availableForWork: true` in
+  `site.ts` to show the "Available for work" chip in the header again.
 - **Nav anchors.** `navItems` in `site.ts` holds the anchors and a `key` into
   `ui.nav`; the anchors must match the `id` of each `<section>` in
   `src/components/Portfolio.astro`. The scroll-spy derives its targets from

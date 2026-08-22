@@ -80,8 +80,8 @@ export const site = {
     filename: 'Gorkem-Turhan-CV.pdf',
   },
 
-  /** Set to false to hide the "Available for work" pill in the header. */
-  availableForWork: true,
+  /** Flip to true to show the "Available for work" pill in the header. */
+  availableForWork: false,
 } as const;
 
 export interface SocialLink {
