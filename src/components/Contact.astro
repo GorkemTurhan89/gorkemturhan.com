@@ -25,6 +25,12 @@ const isExternal = (href: string) => href.startsWith('http');
               class="card contact"
               href={link.href}
               download={link.download}
+              data-copy={link.href.startsWith('mailto:')
+                ? link.href.slice('mailto:'.length)
+                : undefined}
+              data-copied-label={
+                link.href.startsWith('mailto:') ? ui.contact.copied : undefined
+              }
               target={isExternal(link.href) ? '_blank' : undefined}
               rel={isExternal(link.href) ? 'noopener noreferrer' : undefined}
             >
@@ -40,6 +46,10 @@ const isExternal = (href: string) => href.startsWith('http');
               <span class="contact__arrow" aria-hidden="true">
                 <Icon name="arrow-up-right" size="1rem" />
               </span>
+
+              {link.href.startsWith('mailto:') && (
+                <span class="contact__copied" role="status" />
+              )}
             </a>
           </li>
         ))
@@ -131,4 +141,67 @@ const isExternal = (href: string) => href.startsWith('http');
     opacity: 1;
     translate: 0 0;
   }
+
+  /* Clipboard confirmation. Sits exactly where the arrow does and is taken
+     out of the flow, so the card cannot change width when it appears. */
+  .contact__copied {
+    position: absolute;
+    right: 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--accent);
+    opacity: 0;
+    transition: opacity var(--dur) var(--ease);
+    pointer-events: none;
+  }
+
+  /* Last, so it wins over the hover rule above while the message shows. */
+  .contact.is-copied .contact__copied {
+    opacity: 1;
+  }
+
+  .contact.is-copied .contact__arrow {
+    opacity: 0;
+  }
 </style>
+
+<script>
+  /**
+   * Clipboard fallback for the email card.
+   *
+   * The href stays a plain `mailto:` and is never intercepted — this only
+   * adds a second outcome for visitors whose machine has no handler
+   * registered for the protocol, which is common for anyone reading their
+   * mail in a browser tab. There the click does nothing at all and the
+   * browser reports nothing back, so it cannot be detected and recovered
+   * from after the fact; the address has to be handed over up front.
+   *
+   * Anything failing in here leaves the card exactly as it was.
+   */
+  const cards = document.querySelectorAll<HTMLAnchorElement>('[data-copy]');
+
+  for (const card of cards) {
+    card.addEventListener('click', () => {
+      const address = card.dataset.copy;
+      const status = card.querySelector('[role="status"]');
+
+      if (!address || !status || !navigator.clipboard) return;
+
+      navigator.clipboard
+        .writeText(address)
+        .then(() => {
+          card.classList.add('is-copied');
+          /* Written rather than pre-rendered so the live region announces it. */
+          status.textContent = card.dataset.copiedLabel ?? '';
+
+          window.setTimeout(() => {
+            card.classList.remove('is-copied');
+            status.textContent = '';
+          }, 2000);
+        })
+        .catch(() => {
+          /* Denied permission or an insecure context — the mailto: still ran. */
+        });
+    });
+  }
+</script>

@@ -71,6 +71,10 @@ interface Ui {
     codeAria: (project: string) => string;
     demoAria: (project: string) => string;
   };
+  contact: {
+    /** Shown on the email card once the address reaches the clipboard. */
+    copied: string;
+  };
 }
 
 const UI: Record<Lang, Ui> = {
@@ -119,6 +123,9 @@ const UI: Record<Lang, Ui> = {
       codeAria: (project) => `Code for ${project} on GitHub`,
       demoAria: (project) => `Live demo of ${project}`,
     },
+    contact: {
+      copied: 'Address copied',
+    },
   },
 
   tr: {
@@ -165,6 +172,9 @@ const UI: Record<Lang, Ui> = {
       liveDemo: 'Canlı demo',
       codeAria: (project) => `${project} projesinin GitHub’daki kodu`,
       demoAria: (project) => `${project} projesinin canlı demosu`,
+    },
+    contact: {
+      copied: 'Adres kopyalandı',
     },
   },
 };
