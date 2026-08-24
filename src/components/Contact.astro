@@ -25,9 +25,7 @@ const isExternal = (href: string) => href.startsWith('http');
               class="card contact"
               href={link.href}
               download={link.download}
-              data-copy={link.href.startsWith('mailto:')
-                ? link.href.slice('mailto:'.length)
-                : undefined}
+              data-copy-email={link.href.startsWith('mailto:') || undefined}
               data-copied-label={
                 link.href.startsWith('mailto:') ? ui.contact.copied : undefined
               }
@@ -178,14 +176,22 @@ const isExternal = (href: string) => href.startsWith('http');
    *
    * Anything failing in here leaves the card exactly as it was.
    */
-  const cards = document.querySelectorAll<HTMLAnchorElement>('[data-copy]');
+  const cards = document.querySelectorAll<HTMLAnchorElement>('[data-copy-email]');
 
   for (const card of cards) {
     card.addEventListener('click', () => {
-      const address = card.dataset.copy;
+      /* Read the address off the href rather than carrying a copy of it in
+         an attribute. Cloudflare's email obfuscation rewrites the href in
+         the served HTML and restores it in the browser; a second copy sitting
+         in the markup would hand the address straight back to the scrapers
+         that feature exists to stop. If the bail-out below ever fires, the
+         rewrite has not been undone and there is nothing safe to copy. */
+      const href = card.getAttribute('href') ?? '';
       const status = card.querySelector('[role="status"]');
 
-      if (!address || !status || !navigator.clipboard) return;
+      if (!href.startsWith('mailto:') || !status || !navigator.clipboard) return;
+
+      const address = href.slice('mailto:'.length).split('?')[0];
 
       navigator.clipboard
         .writeText(address)
