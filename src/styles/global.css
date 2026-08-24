@@ -245,16 +245,7 @@ p {
   line-height: 1;
   white-space: nowrap;
   transition: background-color var(--dur) var(--ease),
-    border-color var(--dur) var(--ease), color var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
-}
-
-.btn:hover {
-  transform: translateY(-2px);
-}
-
-.btn:active {
-  transform: translateY(0);
+    border-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
 
 .btn--primary {
@@ -358,7 +349,6 @@ p {
     transform: none;
   }
 
-  .btn:hover,
   .card:hover {
     transform: none;
   }
