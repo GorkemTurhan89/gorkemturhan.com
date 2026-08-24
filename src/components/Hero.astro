@@ -11,21 +11,21 @@ const { t, ui } = useI18n(Astro.currentLocale);
   <div class="hero__grid" aria-hidden="true"></div>
 
   <div class="container hero__inner">
-    <p class="eyebrow" data-reveal>{t(site.location)}</p>
+    <p class="eyebrow hero__item">{t(site.location)}</p>
 
-    <h1 class="hero__name" data-reveal style="--reveal-delay: 60ms">
+    <h1 class="hero__name hero__item" style="--in-delay: 60ms">
       {site.name}
     </h1>
 
-    <p class="hero__role" data-reveal style="--reveal-delay: 120ms">
+    <p class="hero__role hero__item" style="--in-delay: 120ms">
       {t(site.role)}
     </p>
 
-    <p class="hero__tagline" data-reveal style="--reveal-delay: 180ms">
+    <p class="hero__tagline hero__item" style="--in-delay: 180ms">
       {t(site.tagline)}
     </p>
 
-    <div class="hero__actions" data-reveal style="--reveal-delay: 240ms">
+    <div class="hero__actions hero__item" style="--in-delay: 240ms">
       <a
         class="btn btn--primary"
         href={socials.linkedin.href}
@@ -112,6 +112,32 @@ const { t, ui } = useI18n(Astro.currentLocale);
 
   .hero__inner {
     max-width: 60rem;
+  }
+
+  /* The hero is always above the fold, so it fades in on load rather than
+     waiting for the scroll observer the lower sections use. Nothing here
+     depends on the page script running — or on the tab ever being painted —
+     so the first thing a visitor sees can never be left at opacity 0.
+
+     `backwards` holds the start frame through the stagger delay; the moment
+     the animation is over the element simply has its normal styles. */
+  .hero__item {
+    animation: hero-in 620ms var(--ease) var(--in-delay, 0ms) backwards;
+  }
+
+  @keyframes hero-in {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+  }
+
+  /* The global reduce block zeroes durations but not delays, which would
+     still hide the hero for a beat. Drop the animation outright instead. */
+  @media (prefers-reduced-motion: reduce) {
+    .hero__item {
+      animation: none;
+    }
   }
 
   .hero__name {
