@@ -1,24 +1,14 @@
 ---
 interface Props {
-  /** Two-digit index shown in the eyebrow, e.g. "01". */
-  index: string;
-  /** Small uppercase label next to the index. */
-  eyebrow: string;
   title: string;
   /** Optional supporting line under the title. */
   lead?: string;
 }
 
-const { index, eyebrow, title, lead } = Astro.props;
+const { title, lead } = Astro.props;
 ---
 
 <div class="heading" data-reveal>
-  <p class="eyebrow">
-    {/* Decorative numbering — hidden from assistive tech so the label
-        is announced as "About" rather than "01About". */}
-    <span class="heading__index" aria-hidden="true">{index}</span>
-    {eyebrow}
-  </p>
   <h2 class="heading__title">{title}</h2>
   {lead && <p class="heading__lead">{lead}</p>}
 </div>
@@ -28,12 +18,7 @@ const { index, eyebrow, title, lead } = Astro.props;
     margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
   }
 
-  .heading__index {
-    color: var(--text-dim);
-  }
-
   .heading__title {
-    margin-top: 0.85rem;
     font-size: clamp(1.75rem, 4.2vw, 2.5rem);
     letter-spacing: -0.03em;
   }

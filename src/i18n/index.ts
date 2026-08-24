@@ -58,11 +58,11 @@ interface Ui {
   nav: { about: string; skills: string; experience: string; work: string; contact: string };
   hero: { downloadCv: string; scrollToAbout: string };
   sections: {
-    about: { eyebrow: string; title: string };
-    skills: { eyebrow: string; title: string; lead: string };
-    experience: { eyebrow: string; title: string; lead: string };
-    work: { eyebrow: string; title: string; lead: string };
-    contact: { eyebrow: string; title: string; lead: string };
+    about: { title: string };
+    skills: { title: string; lead: string };
+    experience: { title: string; lead: string };
+    work: { title: string; lead: string };
+    contact: { title: string; lead: string };
   };
   work: {
     code: string;
@@ -96,24 +96,20 @@ const UI: Record<Lang, Ui> = {
       scrollToAbout: 'Scroll to About',
     },
     sections: {
-      about: { eyebrow: 'About', title: 'About me' },
+      about: { title: 'About me' },
       skills: {
-        eyebrow: 'Skills',
         title: 'What I work with',
         lead: 'The tools I reach for, grouped by where they sit in the delivery cycle — from writing the suite to watching what it catches in production.',
       },
       experience: {
-        eyebrow: 'Experience',
         title: 'Where I’ve worked',
         lead: 'Roles in reverse-chronological order, with the parts that moved the needle.',
       },
       work: {
-        eyebrow: 'Featured work',
         title: 'Selected projects',
         lead: 'Test frameworks and side projects — the code behind the CV bullets.',
       },
       contact: {
-        eyebrow: 'Contact',
         title: 'Let’s work together',
         lead: 'Open to QA automation roles, SDET positions and freelance engagements. The fastest way to reach me is email or LinkedIn — the full CV is a click away.',
       },
@@ -150,24 +146,20 @@ const UI: Record<Lang, Ui> = {
       scrollToAbout: 'Hakkımda bölümüne in',
     },
     sections: {
-      about: { eyebrow: 'Hakkımda', title: 'Hakkımda' },
+      about: { title: 'Hakkımda' },
       skills: {
-        eyebrow: 'Yetkinlikler',
         title: 'Kullandığım teknolojiler',
         lead: 'Uzandığım araçlar, teslim döngüsündeki yerlerine göre gruplanmış — testi yazmaktan, canlıda ne yakaladığını izlemeye kadar.',
       },
       experience: {
-        eyebrow: 'Deneyim',
         title: 'Çalıştığım yerler',
         lead: 'Roller tersten kronolojik sırayla, fark yaratan kısımlarıyla.',
       },
       work: {
-        eyebrow: 'Projeler',
         title: 'Seçili projeler',
         lead: 'Test framework’leri ve yan projeler — CV maddelerinin arkasındaki kod.',
       },
       contact: {
-        eyebrow: 'İletişim',
         title: 'Birlikte çalışalım',
         lead: 'QA otomasyon rollerine, SDET pozisyonlarına ve freelance işlere açığım. Bana en hızlı e-posta veya LinkedIn üzerinden ulaşabilirsin — CV’nin tamamı bir tık ötede.',
       },
