@@ -91,7 +91,7 @@ export interface SocialLink {
   handle: Localized;
   href: string;
   /** Key into the `Icon` component's sprite. */
-  icon: 'linkedin' | 'github' | 'mail' | 'upwork' | 'download';
+  icon: 'linkedin' | 'github' | 'mail' | 'download';
   /** Set on same-origin file links so the browser saves rather than navigates. */
   download?: string;
 }
@@ -117,12 +117,6 @@ export const socials = {
     href: 'mailto:gorkemturhan41@gmail.com',
     icon: 'mail',
   },
-  upwork: {
-    label: both('Upwork'),
-    handle: { en: 'Hire me on Upwork', tr: 'Upwork profilim' },
-    href: 'https://www.upwork.com/freelancers/~015aee3872931557d6',
-    icon: 'upwork',
-  },
   cv: {
     label: { en: 'Download CV', tr: 'CV’yi indir' },
     handle: { en: 'PDF · 2 pages', tr: 'PDF · 2 sayfa' },
@@ -133,9 +127,8 @@ export const socials = {
 } as const satisfies Record<string, SocialLink>;
 
 /**
- * Order of the cards in the contact section: the four ways to reach me,
- * then the CV. With an odd count the last card spans the full row, which
- * is why the download sits at the end.
+ * Order of the cards in the contact section: the three ways to reach me,
+ * then the CV, which closes the set.
  *
  * Entries without an `href` are dropped, so an unfinished link can never
  * render as a dead card.
@@ -144,7 +137,6 @@ export const contactLinks: SocialLink[] = [
   socials.linkedin,
   socials.github,
   socials.email,
-  socials.upwork,
   socials.cv,
 ].filter((link) => link.href.length > 0);
 
