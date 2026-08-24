@@ -121,8 +121,18 @@ const { t, ui } = useI18n(Astro.currentLocale);
 
      `backwards` holds the start frame through the stagger delay; the moment
      the animation is over the element simply has its normal styles. */
-  .hero__item {
+  /* Gated on `.js` for the same reason the scroll reveal is: with scripting
+     off there is nothing to fall back on, so don't start from a hidden frame
+     at all. Every failure path below lands on "visible". */
+  :global(.js) .hero__item {
     animation: hero-in 620ms var(--ease) var(--in-delay, 0ms) backwards;
+  }
+
+  /* A tab that never paints never advances an animation either — its timeline
+     stays at 0 — so `backwards` would strand the hero on its first keyframe.
+     The script sets this the moment it works out that no frame is coming. */
+  :global(.reveal-instant) .hero__item {
+    animation: none;
   }
 
   @keyframes hero-in {
@@ -135,7 +145,7 @@ const { t, ui } = useI18n(Astro.currentLocale);
   /* The global reduce block zeroes durations but not delays, which would
      still hide the hero for a beat. Drop the animation outright instead. */
   @media (prefers-reduced-motion: reduce) {
-    .hero__item {
+    :global(.js) .hero__item {
       animation: none;
     }
   }

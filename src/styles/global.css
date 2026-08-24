@@ -331,6 +331,14 @@ p {
   transform: none;
 }
 
+/* Set by the script when a reveal is forced rather than scrolled into view.
+   A transition only advances on painted frames, so in the very contexts the
+   forcing exists for — a tab that never paints — the fade would never run and
+   the content would sit at opacity 0 with the class already on it. */
+.reveal-instant [data-reveal] {
+  transition: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

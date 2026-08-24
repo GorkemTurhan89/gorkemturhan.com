@@ -119,18 +119,61 @@ const personSchema = {
     <script>
       /**
        * Page behaviour. Four small, independent pieces of vanilla JS:
-       * a sticky-header state, the mobile menu, a nav scroll-spy, and
-       * reveal-on-scroll.
+       * reveal-on-scroll, a sticky-header state, the mobile menu, and a nav
+       * scroll-spy.
        *
        * Everything degrades gracefully — without JS the page is fully readable,
-       * just without the polish.
+       * just without the polish. Reveal comes first on purpose: it is the only
+       * one holding content back, so nothing else may run ahead of it.
        */
 
       const prefersReducedMotion = window.matchMedia(
         '(prefers-reduced-motion: reduce)',
       ).matches;
 
-      /* --- 1. Sticky header: add a background once we leave the top --- */
+      /* --- 1. Reveal on scroll ---
+         `.js [data-reveal]` hides this content up front and only the code
+         below hands it back, so this block runs before anything that could
+         throw underneath it. */
+      const revealTargets = document.querySelectorAll('[data-reveal]');
+      const revealAll = () => {
+        /* Skip the fade, don't just trigger it — see .reveal-instant. */
+        document.documentElement.classList.add('reveal-instant');
+        revealTargets.forEach((el) => el.classList.add('is-revealed'));
+      };
+
+      if (prefersReducedMotion || typeof IntersectionObserver !== 'function') {
+        revealAll();
+      } else {
+        const reveal = new IntersectionObserver(
+          (entries, observer) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              entry.target.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          },
+          { rootMargin: '0px 0px -12% 0px', threshold: 0.05 },
+        );
+
+        revealTargets.forEach((el) => reveal.observe(el));
+
+        /* A tab that is never painted — a background load, a crawler, a link
+           preview renderer — runs no frames, so the observer never fires and
+           the page stays blank with all of its text sitting in the DOM.
+           Timers do still run there, so take one animation frame as proof
+           that painting happens at all, and reveal everything outright if it
+           never arrives. */
+        let painted = false;
+        requestAnimationFrame(() => {
+          painted = true;
+        });
+        setTimeout(() => {
+          if (!painted) revealAll();
+        }, 1200);
+      }
+
+      /* --- 2. Sticky header: add a background once we leave the top --- */
       const header = document.getElementById('site-header');
 
       if (header) {
@@ -141,7 +184,7 @@ const personSchema = {
         window.addEventListener('scroll', onScroll, { passive: true });
       }
 
-      /* --- 2. Mobile menu --- */
+      /* --- 3. Mobile menu --- */
       const nav = document.getElementById('primary-nav');
       const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
 
@@ -171,7 +214,7 @@ const personSchema = {
         });
       }
 
-      /* --- 3. Scroll-spy: highlight the nav link for the section in view --- */
+      /* --- 4. Scroll-spy: highlight the nav link for the section in view --- */
       const navLinks = Array.from(
         document.querySelectorAll<HTMLAnchorElement>('[data-nav-link]'),
       );
@@ -208,26 +251,6 @@ const personSchema = {
         );
 
         sections.forEach((section) => spy.observe(section));
-      }
-
-      /* --- 4. Reveal on scroll --- */
-      const revealTargets = document.querySelectorAll('[data-reveal]');
-
-      if (prefersReducedMotion) {
-        revealTargets.forEach((el) => el.classList.add('is-revealed'));
-      } else {
-        const reveal = new IntersectionObserver(
-          (entries, observer) => {
-            for (const entry of entries) {
-              if (!entry.isIntersecting) continue;
-              entry.target.classList.add('is-revealed');
-              observer.unobserve(entry.target);
-            }
-          },
-          { rootMargin: '0px 0px -12% 0px', threshold: 0.05 },
-        );
-
-        revealTargets.forEach((el) => reveal.observe(el));
       }
     </script>
   </body>
