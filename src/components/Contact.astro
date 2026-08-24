@@ -1,7 +1,7 @@
 ---
 import SectionHeading from './SectionHeading.astro';
 import Icon from './Icon.astro';
-import { contactLinks, socials } from '../data/site';
+import { contactLinks } from '../data/site';
 import { useI18n } from '../i18n';
 
 const { t, ui } = useI18n(Astro.currentLocale);
@@ -45,10 +45,6 @@ const isExternal = (href: string) => href.startsWith('http');
         ))
       }
     </ul>
-
-    <p class="cta" data-reveal>
-      {ui.contact.ctaPrefix} <a href={socials.email.href}>{t(socials.email.handle)}</a>
-    </p>
   </div>
 </section>
 
@@ -134,24 +130,5 @@ const isExternal = (href: string) => href.startsWith('http');
   .contact:focus-visible .contact__arrow {
     opacity: 1;
     translate: 0 0;
-  }
-
-  /* --- Closing line --- */
-  .cta {
-    margin-top: 2.5rem;
-    font-size: 0.9375rem;
-    color: var(--text-muted);
-  }
-
-  .cta a {
-    color: var(--accent);
-    text-decoration: underline;
-    text-decoration-color: var(--accent-tint);
-    text-underline-offset: 4px;
-    transition: text-decoration-color var(--dur) var(--ease);
-  }
-
-  .cta a:hover {
-    text-decoration-color: currentColor;
   }
 </style>

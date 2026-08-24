@@ -71,7 +71,6 @@ interface Ui {
     codeAria: (project: string) => string;
     demoAria: (project: string) => string;
   };
-  contact: { ctaPrefix: string };
 }
 
 const UI: Record<Lang, Ui> = {
@@ -120,9 +119,6 @@ const UI: Record<Lang, Ui> = {
       codeAria: (project) => `Code for ${project} on GitHub`,
       demoAria: (project) => `Live demo of ${project}`,
     },
-    contact: {
-      ctaPrefix: 'Prefer to just send a message?',
-    },
   },
 
   tr: {
@@ -169,9 +165,6 @@ const UI: Record<Lang, Ui> = {
       liveDemo: 'Canlı demo',
       codeAria: (project) => `${project} projesinin GitHub’daki kodu`,
       demoAria: (project) => `${project} projesinin canlı demosu`,
-    },
-    contact: {
-      ctaPrefix: 'Doğrudan mesaj atmayı mı tercih edersin?',
     },
   },
 };
