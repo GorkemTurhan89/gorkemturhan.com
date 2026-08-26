@@ -210,27 +210,6 @@ p {
    Shared components
    ========================================================================== */
 
-/* --- Eyebrow: small mono label above a heading --- */
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-
-.eyebrow::before {
-  content: '';
-  width: 1.75rem;
-  height: 1px;
-  background: currentColor;
-  opacity: 0.5;
-}
-
 /* --- Buttons --- */
 .btn {
   display: inline-flex;

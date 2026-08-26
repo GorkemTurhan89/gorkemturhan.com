@@ -199,9 +199,9 @@ Replace `public/gorkem-turhan-cv.pdf`. It is referenced once, from `site.cv` in
 
 `src/styles/global.css` holds the design tokens (`--bg`, `--accent`,
 `--font-sans`, spacing, radii, motion) plus a reset and the primitives shared
-across sections: `.container`, `.section`, `.eyebrow`, `.btn`, `.chip`,
-`.card`. Everything else is a scoped `<style>` block inside its own component,
-so a section's CSS never leaks.
+across sections: `.container`, `.section`, `.btn`, `.chip`, `.card`.
+Everything else is a scoped `<style>` block inside its own component, so a
+section's CSS never leaks.
 
 Three things to keep in mind if you change the design:
 
