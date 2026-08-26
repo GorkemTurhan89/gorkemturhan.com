@@ -13,6 +13,8 @@ const year = new Date().getFullYear();
       &copy; {year} {site.name}. {ui.rightsReserved}
     </p>
 
+    <p class="footer__location">{t(site.location)}</p>
+
     <ul class="footer__socials">
       <li>
         <a
@@ -63,8 +65,11 @@ const year = new Date().getFullYear();
     color: var(--text-dim);
   }
 
-  .footer__copy {
+  .footer__location {
     margin-right: auto;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
   }
 
   .footer__socials {
@@ -104,7 +109,6 @@ const year = new Date().getFullYear();
   @media (max-width: 560px) {
     .footer__copy {
       flex-basis: 100%;
-      margin-right: 0;
     }
   }
 </style>

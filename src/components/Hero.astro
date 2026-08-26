@@ -11,21 +11,19 @@ const { t, ui } = useI18n(Astro.currentLocale);
   <div class="hero__grid" aria-hidden="true"></div>
 
   <div class="container hero__inner">
-    <p class="eyebrow hero__item">{t(site.location)}</p>
-
-    <h1 class="hero__name hero__item" style="--in-delay: 60ms">
+    <h1 class="hero__name hero__item">
       {site.name}
     </h1>
 
-    <p class="hero__role hero__item" style="--in-delay: 120ms">
+    <p class="hero__role hero__item" style="--in-delay: 60ms">
       {t(site.role)}
     </p>
 
-    <p class="hero__tagline hero__item" style="--in-delay: 180ms">
+    <p class="hero__tagline hero__item" style="--in-delay: 120ms">
       {t(site.tagline)}
     </p>
 
-    <div class="hero__actions hero__item" style="--in-delay: 240ms">
+    <div class="hero__actions hero__item" style="--in-delay: 180ms">
       <a
         class="btn btn--primary"
         href={socials.linkedin.href}
@@ -151,7 +149,6 @@ const { t, ui } = useI18n(Astro.currentLocale);
   }
 
   .hero__name {
-    margin-top: 1.25rem;
     font-size: clamp(2.75rem, 8.5vw, 5.25rem);
     font-weight: 700;
     letter-spacing: -0.035em;
