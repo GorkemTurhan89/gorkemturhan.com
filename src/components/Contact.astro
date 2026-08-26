@@ -57,20 +57,39 @@ const isExternal = (href: string) => href.startsWith('http');
 </section>
 
 <style>
-  /* 22rem forces two roomy columns rather than four cramped ones, so a full
-     email address fits on one line instead of breaking mid-word. It also
-     caps the grid at two columns at every width the container reaches. */
+  /* Fixed column counts rather than auto-fit: the four cards should go from
+     one row to two to a single stack, never through a three-up step that
+     would strand the last one on a row of its own. */
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    grid-template-columns: 1fr;
     gap: 1rem;
   }
 
-  /* With an odd number of cards the last one would sit alone beside a gap.
-     Let it span the row instead, so it reads as a closing call to action.
-     No-op in the single-column layout. */
-  .grid > li:last-child:nth-child(odd) {
-    grid-column: 1 / -1;
+  @media (min-width: 34rem) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* With an odd number of cards the last one would sit alone beside a gap.
+       Let it span the row instead, so it reads as a closing call to action. */
+    .grid > li:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+    }
+  }
+
+  /* The longest handle — the email address — runs about 10rem, so a card
+     needs some 13rem of column to keep it on one line. Four of those plus
+     the gaps and the page gutter clear the container at 62rem. */
+  @media (min-width: 62rem) {
+    .grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    /* Four columns leave no gap for a lone last card to fill. */
+    .grid > li:last-child:nth-child(odd) {
+      grid-column: auto;
+    }
   }
 
   .contact {
@@ -160,6 +179,31 @@ const isExternal = (href: string) => href.startsWith('http');
 
   .contact.is-copied .contact__arrow {
     opacity: 0;
+  }
+
+  /* A quarter-width column cannot hold the icon and a full email address
+     beside each other, so the four-up row stacks them and hands the handle
+     the whole width of the card. */
+  @media (min-width: 62rem) {
+    .contact {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.85rem;
+    }
+
+    /* There is no row left for the arrow to sit at the end of. Pin it to the
+       top corner instead — the same spot the confirmation message uses, so
+       the two still swap in place. */
+    .contact__arrow {
+      position: absolute;
+      top: 1.15rem;
+      right: 1.25rem;
+      margin-left: 0;
+    }
+
+    .contact__copied {
+      top: 1.15rem;
+    }
   }
 </style>
 
